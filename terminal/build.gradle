@@ -6,37 +6,15 @@ sourceSets {
             srcDir 'src'
         }
     }
-    test {
-        java {
-            srcDir 'tests/src'
-        }
-        resources {
-            srcDir 'tests/resources'
-        }
-    }
 }
 
 dependencies {
     compile 'org.slf4j:slf4j-api:1.7.30'
     compile 'org.jetbrains:annotations:13.0'
-
-    testCompile 'junit:junit:4.12'
 }
 
 compileJava {
     sourceCompatibility = '1.8'
     targetCompatibility = '1.8'
     options.debugOptions.debugLevel = 'lines,vars,source'
-}
-
-compileTestJava {
-    sourceCompatibility = '1.8'
-    targetCompatibility = '1.8'
-    options.debugOptions.debugLevel = 'lines,vars,source'
-}
-
-test {
-    testLogging {
-        exceptionFormat = 'full'
-    }
 }
