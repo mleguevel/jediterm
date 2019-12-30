@@ -1,9 +1,5 @@
 package com.jediterm.terminal.ui;
 
-import com.google.common.base.Predicate;
-import com.google.common.base.Supplier;
-import com.google.common.collect.Lists;
-import com.google.common.collect.Sets;
 import com.jediterm.terminal.RequestOrigin;
 import com.jediterm.terminal.TerminalDisplay;
 import com.jediterm.terminal.TtyConnector;
@@ -16,11 +12,13 @@ import org.jetbrains.annotations.Nullable;
 import javax.swing.*;
 import java.awt.*;
 import java.awt.event.*;
+import java.util.*;
 import java.util.List;
-import java.util.Set;
 import java.util.concurrent.CopyOnWriteArrayList;
 import java.util.concurrent.Executors;
 import java.util.function.Function;
+import java.util.function.Predicate;
+import java.util.function.Supplier;
 
 /**
  * @author traff
@@ -36,7 +34,7 @@ public abstract class AbstractTabbedTerminalWidget<T extends JediTermWidget> ext
 
   private TabbedSettingsProvider mySettingsProvider;
 
-  private List<TabListener> myTabListeners = Lists.newArrayList();
+  private List<TabListener> myTabListeners = new ArrayList<>();
   private List<TerminalWidgetListener> myWidgetListeners = new CopyOnWriteArrayList<>();
   private TerminalActionProvider myNextActionProvider;
 
@@ -150,7 +148,7 @@ public abstract class AbstractTabbedTerminalWidget<T extends JediTermWidget> ext
   }
 
   private String generateUniqueName(String suggestedName, AbstractTabs<T> tabs) {
-    final Set<String> names = Sets.newHashSet();
+    final Set<String> names = new HashSet<>();
     for (int i = 0; i < tabs.getTabCount(); i++) {
       names.add(tabs.getTitleAt(i));
     }
@@ -242,7 +240,7 @@ public abstract class AbstractTabbedTerminalWidget<T extends JediTermWidget> ext
   }
 
   private List<T> getAllTerminalSessions() {
-    List<T> session = Lists.newArrayList();
+    List<T> session = new ArrayList<>();
     if (myTabs != null) {
       for (int i = 0; i < myTabs.getTabCount(); i++) {
         session.add(getTerminalPanel(i));
@@ -275,45 +273,23 @@ public abstract class AbstractTabbedTerminalWidget<T extends JediTermWidget> ext
 
   @Override
   public List<TerminalAction> getActions() {
-    return Lists.newArrayList(
-      new TerminalAction("New Session", mySettingsProvider.getNewSessionKeyStrokes(), new Predicate<KeyEvent>() {
-        @Override
-        public boolean apply(KeyEvent input) {
-          handleNewSession();
-          return true;
-        }
-      }).withMnemonicKey(KeyEvent.VK_N),
-      new TerminalAction("Close Session", mySettingsProvider.getCloseSessionKeyStrokes(), new Predicate<KeyEvent>() {
-        @Override
-        public boolean apply(KeyEvent input) {
-          closeCurrentSession();
-          return true;
-        }
-      }).withMnemonicKey(KeyEvent.VK_S),
-      new TerminalAction("Next Tab", mySettingsProvider.getNextTabKeyStrokes(), new Predicate<KeyEvent>() {
-        @Override
-        public boolean apply(KeyEvent input) {
-          selectNextTab();
-          return true;
-        }
-      }).withEnabledSupplier(new Supplier<Boolean>() {
-        @Override
-        public Boolean get() {
-          return myTabs != null && myTabs.getSelectedIndex() < myTabs.getTabCount() - 1;
-        }
-      }),
-      new TerminalAction("Previous Tab", mySettingsProvider.getPreviousTabKeyStrokes(), new Predicate<KeyEvent>() {
-        @Override
-        public boolean apply(KeyEvent input) {
-          selectPreviousTab();
-          return true;
-        }
-      }).withEnabledSupplier(new Supplier<Boolean>() {
-        @Override
-        public Boolean get() {
-          return myTabs != null && myTabs.getSelectedIndex() > 0;
-        }
-      })
+    return Arrays.asList(
+            new TerminalAction("New Session", mySettingsProvider.getNewSessionKeyStrokes(), input -> {
+              handleNewSession();
+              return true;
+            }).withMnemonicKey(KeyEvent.VK_N),
+            new TerminalAction("Close Session", mySettingsProvider.getCloseSessionKeyStrokes(), input -> {
+              closeCurrentSession();
+              return true;
+            }).withMnemonicKey(KeyEvent.VK_S),
+            new TerminalAction("Next Tab", mySettingsProvider.getNextTabKeyStrokes(), input -> {
+              selectNextTab();
+              return true;
+            }).withEnabledSupplier(() -> myTabs != null && myTabs.getSelectedIndex() < myTabs.getTabCount() - 1),
+            new TerminalAction("Previous Tab", mySettingsProvider.getPreviousTabKeyStrokes(), input -> {
+              selectPreviousTab();
+              return true;
+            }).withEnabledSupplier(() -> myTabs != null && myTabs.getSelectedIndex() > 0)
     );
   }
 

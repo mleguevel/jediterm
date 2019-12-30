@@ -17,9 +17,8 @@ sourceSets {
 }
 
 dependencies {
-    compile 'log4j:log4j:1.2.14'
+    compile 'org.slf4j:slf4j-api:1.7.30'
     compile 'org.jetbrains:annotations:13.0'
-    compile 'com.google.guava:guava:25.1-jre'
 
     testCompile 'junit:junit:4.12'
 }

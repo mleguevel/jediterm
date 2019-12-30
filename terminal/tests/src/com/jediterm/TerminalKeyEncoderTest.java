@@ -1,6 +1,6 @@
 package com.jediterm;
 
-import com.google.common.base.Ascii;
+import com.jediterm.terminal.util.Ascii;
 import com.jediterm.terminal.TerminalKeyEncoder;
 import com.jediterm.terminal.ui.UIUtil;
 import junit.framework.TestCase;

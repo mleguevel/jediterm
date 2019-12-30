@@ -1,7 +1,5 @@
 package com.jediterm.terminal.ui;
 
-import com.google.common.base.Predicate;
-import com.google.common.collect.Lists;
 import com.jediterm.terminal.SubstringFinder.FindResult;
 import com.jediterm.terminal.SubstringFinder.FindResult.FindItem;
 import com.jediterm.terminal.*;
@@ -12,7 +10,8 @@ import com.jediterm.terminal.model.TerminalTextBuffer;
 import com.jediterm.terminal.model.hyperlinks.HyperlinkFilter;
 import com.jediterm.terminal.model.hyperlinks.TextProcessing;
 import com.jediterm.terminal.ui.settings.SettingsProvider;
-import org.apache.log4j.Logger;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.jetbrains.annotations.NotNull;
 
 import javax.swing.*;
@@ -22,16 +21,18 @@ import javax.swing.plaf.basic.BasicArrowButton;
 import javax.swing.plaf.basic.BasicScrollBarUI;
 import java.awt.*;
 import java.awt.event.*;
+import java.util.Arrays;
 import java.util.List;
 import java.util.concurrent.CopyOnWriteArrayList;
 import java.util.concurrent.atomic.AtomicBoolean;
+import java.util.function.Predicate;
 
 /**
  * JediTerm terminal widget with UI implemented in Swing.
  * <p/>
  */
 public class JediTermWidget extends JPanel implements TerminalSession, TerminalWidget, TerminalActionProvider {
-  private static final Logger LOG = Logger.getLogger(JediTermWidget.class);
+  private static final Logger LOG = LoggerFactory.getLogger(JediTermWidget.class);
 
   protected final TerminalPanel myTerminalPanel;
   protected final JScrollBar myScrollBar;
@@ -238,10 +239,10 @@ public class JediTermWidget extends JPanel implements TerminalSession, TerminalW
 
   @Override
   public List<TerminalAction> getActions() {
-    return Lists.newArrayList(new TerminalAction("Find", mySettingsProvider.getFindKeyStrokes(),
+    return Arrays.asList(new TerminalAction("Find", mySettingsProvider.getFindKeyStrokes(),
             new Predicate<KeyEvent>() {
               @Override
-              public boolean apply(KeyEvent input) {
+              public boolean test(KeyEvent input) {
                 showFindText();
                 return true;
               }

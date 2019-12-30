@@ -1,7 +1,5 @@
 package com.jediterm.terminal.model;
 
-import com.google.common.base.Joiner;
-import com.google.common.collect.Lists;
 import com.jediterm.terminal.StyledTextConsumer;
 import com.jediterm.terminal.TextStyle;
 import com.jediterm.terminal.util.CharUtils;
@@ -38,7 +36,7 @@ public class TerminalLine {
   public synchronized String getText() {
     final StringBuilder sb = new StringBuilder();
 
-    for (TerminalLine.TextEntry textEntry : Lists.newArrayList(myTextEntries)) {
+    for (TerminalLine.TextEntry textEntry : myTextEntries) {
       // NUL can only be at the end
       if (textEntry.getText().isNul()) {
         break;
@@ -251,7 +249,7 @@ public class TerminalLine {
   public synchronized void process(int y, StyledTextConsumer consumer, int startRow) {
     int x = 0;
     int nulIndex = -1;
-    for (TextEntry te : Lists.newArrayList(myTextEntries)) {
+    for (TextEntry te : myTextEntries) {
       if (te.getText().isNul()) {
         if (nulIndex < 0) {
           nulIndex = x;
@@ -294,8 +292,8 @@ public class TerminalLine {
     return myTextEntries.length() + " chars, " +
         (myWrapped ? "wrapped, " : "") +
         myTextEntries.myTextEntries.size() + " entries: " +
-        Joiner.on("|").join(myTextEntries.myTextEntries.stream().map(
-            entry -> entry.getText().toString()).collect(Collectors.toList())
+        (myTextEntries.myTextEntries.stream().map(
+            entry -> entry.getText().toString()).collect(Collectors.joining("|"))
         );
   }
 

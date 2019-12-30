@@ -1,7 +1,7 @@
 package com.jediterm.terminal.model;
 
-import com.google.common.base.Preconditions;
-import org.apache.log4j.Logger;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.jetbrains.annotations.NotNull;
 
 import java.awt.*;
@@ -9,7 +9,7 @@ import java.util.List;
 import java.util.*;
 
 class ChangeWidthOperation {
-  private static final Logger LOG = Logger.getLogger(TerminalTextBuffer.class);
+  private static final Logger LOG = LoggerFactory.getLogger(TerminalTextBuffer.class);
 
   private final TerminalTextBuffer myTextBuffer;
   private final int myNewWidth;
@@ -50,7 +50,9 @@ class ChangeWidthOperation {
     if (myCurrentLine == null || myCurrentLineLength == myNewWidth) {
       screenStartInd++;
     }
-    Preconditions.checkState(screenStartInd >= 0, "screenStartInd < 0: %d", screenStartInd);
+    if (!(screenStartInd >= 0)) {
+      throw new IllegalStateException("screenStartInd < 0: " + screenStartInd);
+    }
     LinesBuffer screenBuffer = myTextBuffer.getScreenBufferOrBackup();
     if (screenBuffer.getLineCount() > myTextBuffer.getHeight()) {
       LOG.warn("Terminal height < screen buffer line count: " + myTextBuffer.getHeight() + " < " + screenBuffer.getLineCount());

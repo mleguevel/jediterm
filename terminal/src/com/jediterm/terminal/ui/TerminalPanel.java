@@ -1,7 +1,6 @@
 package com.jediterm.terminal.ui;
 
-import com.google.common.base.Ascii;
-import com.google.common.collect.Lists;
+import com.jediterm.terminal.util.Ascii;
 import com.jediterm.terminal.*;
 import com.jediterm.terminal.SubstringFinder.FindResult.FindItem;
 import com.jediterm.terminal.TextStyle.Option;
@@ -14,7 +13,8 @@ import com.jediterm.terminal.model.hyperlinks.LinkInfo;
 import com.jediterm.terminal.ui.settings.SettingsProvider;
 import com.jediterm.terminal.util.CharUtils;
 import com.jediterm.terminal.util.Pair;
-import org.apache.log4j.Logger;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
@@ -34,13 +34,14 @@ import java.lang.ref.WeakReference;
 import java.net.URI;
 import java.text.AttributedCharacterIterator;
 import java.text.CharacterIterator;
+import java.util.Arrays;
 import java.util.List;
 import java.util.concurrent.CopyOnWriteArrayList;
 import java.util.concurrent.atomic.AtomicBoolean;
 import java.util.concurrent.atomic.AtomicInteger;
 
 public class TerminalPanel extends JComponent implements TerminalDisplay, TerminalActionProvider {
-  private static final Logger LOG = Logger.getLogger(TerminalPanel.class);
+  private static final Logger LOG = LoggerFactory.getLogger(TerminalPanel.class);
   private static final long serialVersionUID = -1048763516632093014L;
 
   public static final double SCROLL_SPEED = 0.05;
@@ -530,7 +531,7 @@ public class TerminalPanel extends JComponent implements TerminalDisplay, Termin
 
       myTerminalStarter.sendString(text);
     } catch (RuntimeException e) {
-      LOG.info(e);
+      LOG.info("Error pasting", e);
     }
   }
 
@@ -1365,7 +1366,7 @@ public class TerminalPanel extends JComponent implements TerminalDisplay, Termin
 
   @Override
   public List<TerminalAction> getActions() {
-    return Lists.newArrayList(
+    return Arrays.asList(
             new TerminalAction("Open as URL", new KeyStroke[0], input ->
                     openSelectionAsURL()).withEnabledSupplier(this::selectionTextIsUrl),
             new TerminalAction("Copy", mySettingsProvider.getCopyKeyStrokes(), input ->

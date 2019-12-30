@@ -1,15 +1,12 @@
 package com.jediterm.terminal;
 
-import com.google.common.collect.Lists;
-import com.google.common.collect.Maps;
 import com.jediterm.terminal.model.CharBuffer;
 import com.jediterm.terminal.util.Pair;
 import org.jetbrains.annotations.NotNull;
 
 import java.awt.*;
-import java.util.ArrayList;
+import java.util.*;
 import java.util.List;
-import java.util.Map;
 
 /**
  * Implementation of substring search based on Rabin-Karp algorithm
@@ -21,7 +18,7 @@ public class SubstringFinder {
   private final int myPatternHash;
   private int myCurrentHash;
   private int myCurrentLength;
-  private final ArrayList<TextToken> myTokens = Lists.newArrayList();
+  private final ArrayList<TextToken> myTokens = new ArrayList<>();
   private int myFirstIndex;
   private int myPower = 0;
 
@@ -93,8 +90,8 @@ public class SubstringFinder {
   }
 
   public static class FindResult {
-    private final List<FindItem> items = Lists.newArrayList();
-    private final Map<CharBuffer, List<Pair<Integer, Integer>>> ranges = Maps.newHashMap();
+    private final List<FindItem> items = new ArrayList<>();
+    private final Map<CharBuffer, List<Pair<Integer, Integer>>> ranges = new HashMap<>();
     private int currentFindItem = 0;
 
     public List<Pair<Integer, Integer>> getRanges(CharBuffer characters) {
@@ -110,7 +107,7 @@ public class SubstringFinder {
       final int index;
 
       private FindItem(ArrayList<TextToken> tokens, int firstIndex, int lastIndex, int index) {
-        this.tokens = Lists.newArrayList(tokens);
+        this.tokens = new ArrayList<>(tokens);
         this.firstIndex = firstIndex;
         this.lastIndex = lastIndex;
         this.index = index;
@@ -185,7 +182,7 @@ public class SubstringFinder {
       if (ranges.containsKey(characters)) {
         ranges.get(characters).add(range);
       } else {
-        ranges.put(characters, Lists.newArrayList(range));
+        ranges.put(characters, Arrays.asList(range));
       }
     }
 
